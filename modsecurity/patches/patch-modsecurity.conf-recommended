@@ -1,0 +1,30 @@
+$NetBSD$
+
+#	Patchfile created to udpate the configuration file directory structure to match smartos
+
+--- modsecurity.conf-recommended.orig	2020-06-25 19:23:02.415902203 +0000
++++ modsecurity.conf-recommended
+@@ -207,8 +207,8 @@ SecDataDir /tmp/
+ # The default debug log configuration is to duplicate the error, warning
+ # and notice messages from the error log.
+ #
+-#SecDebugLog /opt/modsecurity/var/log/debug.log
+-#SecDebugLogLevel 3
++SecDebugLog /var/log/modsecurity/debug.log
++SecDebugLogLevel 3
+ 
+ 
+ # -- Audit log configuration -------------------------------------------------
+@@ -227,10 +227,10 @@ SecAuditLogParts ABIJDEFHZ
+ # assumes that you will use the audit log only ocassionally.
+ #
+ SecAuditLogType Serial
+-SecAuditLog /var/log/modsec_audit.log
++SecAuditLog /var/log/modsecurity/modsec_audit.log
+ 
+ # Specify the path for concurrent audit logging.
+-#SecAuditLogStorageDir /opt/modsecurity/var/audit/
++SecAuditLogStorageDir /var/log/modsecurity/audit/
+ 
+ 
+ # -- Miscellaneous -----------------------------------------------------------

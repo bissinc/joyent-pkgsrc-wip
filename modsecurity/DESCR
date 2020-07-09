@@ -1,0 +1,4 @@
+This is the libmodsecurity verison 3 "core library" package.
+ModSecurity 3 is an intrusion prevention and detection engine
+also known as a: WAF.  To put the library to use, a connector
+project must be chosen for your chosen webserver.

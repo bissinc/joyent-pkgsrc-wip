@@ -1,0 +1,12 @@
+$NetBSD$
+
+SHA1 (modsecurity-v3.0.4.tar.gz) = cbe8dd90800e81a3de1dc348f43d4fadb5aac88f
+RMD160 (modsecurity-v3.0.4.tar.gz) = f3041d21a98d051b1cc51867fd734edbcd33ffea
+SHA512 (modsecurity-v3.0.4.tar.gz) = 7eb64688012dd7bad595103d3e6c71b12896335ff080d1edf4b834a3cf049fbd495d4d026779b6f2789a7c02b672da32babbc510f9adb4c85c81f3c3f7a989f7
+Size (modsecurity-v3.0.4.tar.gz) = 2806291 bytes
+SHA1 (v3.3.0.zip) = 5c0e339a359fa71a0a9d983b95a33f6ec3cee8b4
+RMD160 (v3.3.0.zip) = 75732567cd306b1ff13d845b27b6b995adc03e7f
+SHA512 (v3.3.0.zip) = a6c2b5b8f7e09907759a3252015fd4fb39441c258ffe520baeea7cd82aef1b1ddd6edcd99997db14215f8c16461266d59697485d0512dfa6f346897e6958f1b1
+Size (v3.3.0.zip) = 446591 bytes
+SHA1 (patch-configure) = fdca5caf2856abeff20c91bdb63bb64b37299265
+SHA1 (patch-modsecurity.conf-recommended) = 46ad3a23fe18f32b183bd012a49667d237c4ccd6
