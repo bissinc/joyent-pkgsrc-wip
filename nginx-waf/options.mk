@@ -1,5 +1,4 @@
 # $NetBSD: options.mk,v 1.52 2019/11/04 22:09:57 rillig Exp $
-
 PKG_OPTIONS_VAR=		PKG_OPTIONS.nginx
 PKG_SUPPORTED_OPTIONS=		nginx-dav nginx-flv gtools luajit nginx-mail-proxy memcached \
 				pcre nginx-push nginx-realip ssl nginx-sub nginx-uwsgi nginx-image-filter \
@@ -75,11 +74,10 @@ NEED_NDK=		yes
 .  endif
 .endfor
 .if defined(NEED_NDK) || make(makesum)
-NDK_VERSION=		0.3.1
-NDK_DISTNAME=		ngx_devel_kit-${NDK_VERSION}
-NDK_DISTFILE=		${NDK_DISTNAME}.tar.gz
-SITES.${NDK_DISTFILE}=	${MASTER_SITE_GITHUB:S,^,-,:=simpl/}
-DISTFILES+=		${NDK_DISTFILE}
+GIT_REPOSITORIES+=	ndk
+GIT_REPO.ndk=		git@github.com:vision5/ngx_devel_kit.git
+GIT_TAG.ndk=		v0.3.1
+NDK_DISTNAME=		ngx_devel_kit
 .endif
 
 .if !empty(PKG_OPTIONS:Mluajit)
@@ -89,77 +87,71 @@ CONFIGURE_ENV+=		LUAJIT_INC=${PREFIX}/include/luajit-2.0
 CONFIGURE_ARGS+=	--add-module=../${LUA_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mluajit) || make(makesum)
-LUA_VERSION=		0.10.15
-LUA_DISTNAME=		lua-nginx-module-${LUA_VERSION}
-LUA_DISTFILE=		${LUA_DISTNAME}.tar.gz
-SITES.${LUA_DISTFILE}=	${MASTER_SITE_GITHUB:S,^,-,:=openresty/lua-nginx-module/}
-DISTFILES+=		${LUA_DISTFILE}
+GIT_REPOSITORIES+=	${LUA_DISTNAME}
+GIT_REPO.lua=		git@github.com:openresty/lua-nginx-module.git
+GIT_TAG.lua=		v0.10.15
+LUA_DISTNAME=		lua
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-openresty-echo)
-CONFIGURE_ARGS+=		--add-module=../${ECHOMOD_DISTNAME}
+CONFIGURE_ARGS+=	--add-module=../${ECHOMOD_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-openresty-echo) || make(makesum)
-ECHOMOD_VERSION=		0.61
-ECHOMOD_DISTNAME=		echo-nginx-module-${ECHOMOD_VERSION}
-ECHOMOD_DISTFILE=		${ECHOMOD_DISTNAME}.tar.gz
-SITES.${ECHOMOD_DISTFILE}=	${MASTER_SITE_GITHUB:S,^,-,:=openresty/echo-nginx-module/}
-DISTFILES+=			${ECHOMOD_DISTFILE}
+ECHOMOD_VERSION=	0.61
+ECHOMOD_DISTNAME=	echo-nginx-module-${ECHOMOD_VERSION}
+GIT_REPOSITORIES+=	echomod
+GIT_REPO.echomod=	git@github.com:openresty/echo-nginx-module.git
+GIT_TAG.echomod=	v0.61
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-openresty-set-misc)
-CONFIGURE_ARGS+=		--add-module=../${SETMISC_DISTNAME}
+CONFIGURE_ARGS+=	--add-module=../${SETMISC_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-openresty-set-misc) || make(makesum)
-SETMISC_VERSION=		0.32
-SETMISC_DISTNAME=		set-misc-nginx-module-${SETMISC_VERSION}
-SETMISC_DISTFILE=		${SETMISC_DISTNAME}.tar.gz
-SITES.${SETMISC_DISTFILE}=	${MASTER_SITE_GITHUB:S,^,-,:=openresty/set-misc-nginx-module/}
-DISTFILES+=			${SETMISC_DISTFILE}
+SETMISC_DISTNAME=	set-misc-nginx-module
+GIT_REPOSITORIES+=	setmisc
+GIT_REPO.setmisc=	git@github.com:openresty/set-misc-nginx-module.git
+GIT_TAG.setmisc=	v0.32
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-openresty-array-var)
-CONFIGURE_ARGS+=		--add-module=../${ARRAYVAR_DISTNAME}
+CONFIGURE_ARGS+=	--add-module=../${ARRAYVAR_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-openresty-array-var) || make(makesum)
-ARRAYVAR_VERSION=		0.05
-ARRAYVAR_DISTNAME=		array-var-nginx-module-${ARRAYVAR_VERSION}
-ARRAYVAR_DISTFILE=		${ARRAYVAR_DISTNAME}.tar.gz
-SITES.${ARRAYVAR_DISTFILE}=	${MASTER_SITE_GITHUB:S,^,-,:=openresty/array-var-nginx-module/}
-DISTFILES+=			${ARRAYVAR_DISTFILE}
+ARRAYVAR_DISTNAME=	array-var-nginx-module
+GIT_REPOSITORIES+=	arrayvar
+GIT_REPO.arrayvar=	git@github.com:openresty/array-var-nginx-module.git
+GIT_TAG.arrayvar=	v0.5
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-openresty-encrypted-session)
-CONFIGURE_ARGS+=		--add-module=../${ENCSESS_DISTNAME}
+CONFIGURE_ARGS+=	--add-module=../${ENCSESS_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-openresty-encrypted-session) || make(makesum)
-ENCSESS_VERSION=		0.08
-ENCSESS_DISTNAME=		encrypted-session-nginx-module-${ENCSESS_VERSION}
-ENCSESS_DISTFILE=		${ENCSESS_DISTNAME}.tar.gz
-SITES.${ENCSESS_DISTFILE}=	${MASTER_SITE_GITHUB:S,^,-,:=openresty/encrypted-session-nginx-module/}
-DISTFILES+=			${ENCSESS_DISTFILE}
+ENCSESS_DISTNAME=	encrypted-session-nginx-module
+GIT_REPOSITORIES+=	encsess
+GIT_REPO.encsess=	git@github.com:openresty/encrypted-session-nginx-module.git
+GIT_TAG.encsess=	v0.8
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-form-input)
-CONFIGURE_ARGS+=		--add-module=../${FORMINPUT_DISTNAME}
+CONFIGURE_ARGS+=	--add-module=../${FORMINPUT_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-form-input) || make(makesum)
-FORMINPUT_VERSION=		0.12
-FORMINPUT_DISTNAME=		form-input-nginx-module-${FORMINPUT_VERSION}
-FORMINPUT_DISTFILE=		${FORMINPUT_DISTNAME}.tar.gz
-SITES.${FORMINPUT_DISTFILE}=	${MASTER_SITE_GITHUB:S,^,-,:=calio/}
-DISTFILES+=			${FORMINPUT_DISTFILE}
+FORMINPUT_DISTNAME=	form-input-nginx-module
+GIT_REPOSITORIES+=	${FORMINPUT_DISTNAME}	
+GIT_REPO.forminput=	git@github.com:calio/form-input-nginx-module.git
+GIT_TAG.forminput=	v0.12
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-openresty-headers-more)
-CONFIGURE_ARGS+=		--add-module=../${HEADMORE_DISTNAME}
+CONFIGURE_ARGS+=	--add-module=../${HEADMORE_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-openresty-headers-more) || make(makesum)
-HEADMORE_VERSION=		0.33
-HEADMORE_DISTNAME=		headers-more-nginx-module-${HEADMORE_VERSION}
-HEADMORE_DISTFILE=		${HEADMORE_DISTNAME}.tar.gz
-SITES.${HEADMORE_DISTFILE}=	${MASTER_SITE_GITHUB:S,^,-,:=openresty/headers-more-nginx-module/}
-DISTFILES+=			${HEADMORE_DISTFILE}
+HEADMORE_DISTNAME=	headers-more-nginx-module
+GIT_REPOSITORIES+=	${HEADMORE_DISTNAME}
+GIT_REPO.${HEADMORE_DISTNAME}=	git@github.com:openresty/headers-more-nginx-module.git
+GIT_TAG.${HEADMORE_DISTNAME}=	v0.33
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-uwsgi)
@@ -174,11 +166,9 @@ CONFIGURE_ARGS+=	--without-http_uwsgi_module
 CONFIGURE_ARGS+=	--add-module=../nchan-${PUSH_VERSION}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-push) || make(makesum)
-PUSH_VERSION=		1.2.6
-PUSH_DISTNAME=		nginx_http_push_module-${PUSH_VERSION}
-PUSH_DISTFILE=		${PUSH_DISTNAME}.tar.gz
-SITES.${PUSH_DISTFILE}=	${MASTER_SITE_GITHUB:S,^,-,:=slact/}
-DISTFILES+=		${PUSH_DISTFILE}
+GIT_REPOSITORIES+=	push
+GIT_REPO.push=		git@github.com:slact/nchan.git
+GIT_TAG.push=		1.2.6
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-image-filter)
@@ -215,9 +205,8 @@ CONFIGURE_ARGS+=	--with-http_secure_link_module
 CONFIGURE_ARGS+=	--add-module=../${RTMP_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mrtmp) || make(makesum)
-RTMP_VERSION=		1.2.1
-RTMP_DISTNAME=		nginx-rtmp-module-${RTMP_VERSION}
-RTMP_DISTFILE=		${RTMP_DISTNAME}.tar.gz
-SITES.${RTMP_DISTFILE}=	${MASTER_SITE_GITHUB:S,^,-,:=arut/}
-DISTFILES+=		${RTMP_DISTFILE}
+RTMP_DISTNAME=		nginx-rtmp-module
+GIT_REPOSITORIES+=	rtmp
+GIT_REPO.rtmp=		git@github.com:arut/nginx-rtmp-module.git
+GIT_TAG.rtmp=		1.2.1
 .endif

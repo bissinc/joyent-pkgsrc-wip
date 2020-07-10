@@ -10,6 +10,7 @@ DISTFILES=	${DEFAULT_DISTFILES}
 HOMEPAGE=	http://nginx.org/
 COMMENT=	Lightweight HTTP and mail proxy server with modsecurity WAF connector
 LICENSE=	2-clause-bsd
+DEPENDS+=	git<=2.24.1:../../devel/git
 
 .include "../../mk/bsd.prefs.mk"
 
@@ -19,7 +20,7 @@ NGINX_DATADIR?=		${VARBASE}/db/nginx
 NGINX_LOGDIR?=		${VARBASE}/log/nginx
 NGINX_PIDDIR?=		${VARBASE}/run
 
-BUILD_DEFS+=		NGINX_DATADIR NGINX_LOGDIR NGINX_PIDDIR VARBASE MODSECURITY_
+BUILD_DEFS+=		NGINX_DATADIR NGINX_LOGDIR NGINX_PIDDIR VARBASE MODSECURITY_NGINX_DIRNAME MODSECURITY_NGINX_DISTNAME
 
 PKG_USERS_VARS+=	NGINX_USER
 PKG_GROUPS_VARS+=	NGINX_GROUP
@@ -46,11 +47,9 @@ CONFIGURE_ARGS+=	--http-client-body-temp-path=${NGINX_DATADIR}/client_body_temp
 CONFIGURE_ARGS+=	--http-proxy-temp-path=${NGINX_DATADIR}/proxy_temp
 CONFIGURE_ARGS+=	--http-fastcgi-temp-path=${NGINX_DATADIR}/fstcgi_temp
 CONFIGURE_ARGS+=	--http-scgi-temp-path=${NGINX_DATADIR}/scgi_temp
-CONFIGURE_ARGS+=	--add-dynamic-module=../${MODSECURITY_NGINX_DIRNAME}
+CONFIGURE_ARGS+=	--add-dynamic-module=../${MODSECURITY_NGINX_DISTNAME}
 
 PKG_SYSCONFSUBDIR=	nginx
-
-.include "../../wip/nginx-waf/options.mk"
 
 EGDIR=			${PREFIX}/share/examples/nginx
 EGFILES+=		fastcgi.conf fastcgi_params koi-utf koi-win \
@@ -89,13 +88,10 @@ MESSAGE_SUBST+=		NGINX_PIDDIR=${NGINX_PIDDIR}
 MESSAGE_SUBST+=		NGINX_USER=${NGINX_USER}
 MESSAGE_SUBST+=		NGINX_GROUP=${NGINX_GROUP}
 
-MODSECURITY_BASENAME=			modsecurity-nginx
-MODSECURITY_NGINX_VERSION=		1.0.1
-MODSECURITY_NGINX_DIRNAME=		${MODSECURITY_BASENAME}-v${MODSECURITY_NGINX_VERSION}
-MODSECURITY_NGINX_DISTNAME=		modsecurity-nginx-${MODSECURITY_NGINX_VERSION}
-MODSECURITY_NGINX_DISTFILE=		${MODSECURITY_NGINX_DISTNAME}.tar.gz
-SITES.${MODSECURITY_NGINX_DISTFILE}=	${MASTER_SITE_GITHUB:S,^,-,:=SpiderLabs/}
-DISTFILES+=				${MODSECURITY_NGINX_DISTFILE}
+MODSECURITY_NGINX_DISTNAME=		ModSecurity-nginx
+GIT_REPOSITORIES=			${MODSECURITY_NGINX_DISTNAME}
+GIT_REPO.modsecurity-nginx=		git@github.com:SpiderLabs/ModSecurity-nginx.git
+GIT_TAG.modsecurity-nginx=		v1.0.1
 
 .if ${OPSYS} == "Darwin"
 SOEXT=		bundle
@@ -121,6 +117,7 @@ do-install:
 		${DESTDIR}${PERL5_INSTALLVENDORARCH}
 .endif
 
+.include "../../wip/mk/git-package.mk"
 .include "../../wip/modsecurity/buildlink3.mk"
 .include "../../devel/zlib/buildlink3.mk"
 .include "../../mk/bsd.pkg.mk"
