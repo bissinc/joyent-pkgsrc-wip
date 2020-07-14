@@ -1,19 +1,34 @@
 # $NetBSD: options.mk,v 1.52 2019/11/04 22:09:57 rillig Exp $
 PKG_OPTIONS_VAR=		PKG_OPTIONS.nginx
+
 PKG_SUPPORTED_OPTIONS=		nginx-dav nginx-flv gtools luajit nginx-mail-proxy memcached \
 				pcre nginx-push nginx-realip ssl nginx-sub nginx-uwsgi nginx-image-filter \
 				debug nginx-status nginx-openresty-echo \
 				nginx-openresty-set-misc nginx-openresty-headers-more nginx-openresty-array-var nginx-openresty-encrypted-session \
-				nginx-form-input perl gzip http2 nginx-auth-request nginx-secure-link rtmp
-PKG_DEFAULT_OPTIONS=		nginx-dav nginx-openresty-headers-more memcached nginx-realip nginx-status nginx-uwsgi
+				nginx-form-input perl gzip http2 nginx-auth-request nginx-secure-link rtmp nginx-modsecurity-connector
+
+PKG_DEFAULT_OPTIONS=		nginx-dav nginx-openresty-headers-more memcached nginx-realip nginx-status nginx-uwsgi nginx-modsecurity-connector
 PKG_OPTIONS.nginx=		${PKG_DEFAULT_OPTIONS}
 PKG_OPTIONS_LEGACY_OPTS+=	v2:http2
-
 PKG_SUGGESTED_OPTIONS=	pcre ssl
-
-PLIST_VARS+=		perl nginx-uwsgi
-
+PLIST_VARS+=		perl nginx-uwsgi nginx-modsecurity-connector
+BUILD_DEFS+=		REPOSITORIES
+GIT_REPOSITORIES=	${REPOSITORIES}
 .include "../../mk/bsd.options.mk"
+
+.if !empty(PKG_OPTIONS:Mnginx-modsecurity-connector)
+.include "../../wip/modsecurity/buildlink3.mk"
+PLIST.nginx-modsecurity-connector=	yes
+MODSECURITY_DISTNAME=			ModSecurity-nginx
+EGFILES+=				modsec_includes.conf
+CONFIGURE_ARGS+=			--add-dynamic-module=../${MODSECURITY_DISTNAME}
+CUSTOM_OPTS_FILES+=			modsec_includes.conf
+.endif
+.if !empty(PKG_OPTIONS:Mnginx-modsecurity-connector) || make(makesum)
+REPOSITORIES+=				${MODSECURITY_DISTNAME}
+GIT_REPO.${MODSECURITY_DISTNAME}=	git@github.com:SpiderLabs/${MODSECURITY_DISTNAME}
+GIT_TAG.${MODSECURITY_DISTNAME}=	v1.0.1
+.endif
 
 .if !empty(PKG_OPTIONS:Mdebug)
 CONFIGURE_ARGS+=	--with-debug
@@ -69,88 +84,87 @@ CONFIGURE_ARGS+=	--with-http_realip_module
 # NDK must be added once and before 3rd party modules needing it
 .for ngx_mod in luajit nginx-openresty-set-misc nginx-openresty-array-var nginx-form-input nginx-openresty-encrypted-session
 .  if !defined(NEED_NDK) && !empty(PKG_OPTIONS:M${ngx_mod}:O)
+NDK_DISTNAME=		ngx_devel_kit
 CONFIGURE_ARGS+=	--add-module=../${NDK_DISTNAME}
 NEED_NDK=		yes
 .  endif
 .endfor
 .if defined(NEED_NDK) || make(makesum)
-GIT_REPOSITORIES+=	ndk
-GIT_REPO.ndk=		git@github.com:vision5/ngx_devel_kit.git
+REPOSITORIES+=		${NDK_DISTNAME}
+GIT_REPO.ndk=		git@github.com:vision5/${NDK_DISTNAME}.git
 GIT_TAG.ndk=		v0.3.1
-NDK_DISTNAME=		ngx_devel_kit
 .endif
 
 .if !empty(PKG_OPTIONS:Mluajit)
 .include "../../lang/LuaJIT2/buildlink3.mk"
+LUA_DISTNAME=		lua
 CONFIGURE_ENV+=		LUAJIT_LIB=${PREFIX}/lib
 CONFIGURE_ENV+=		LUAJIT_INC=${PREFIX}/include/luajit-2.0
 CONFIGURE_ARGS+=	--add-module=../${LUA_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mluajit) || make(makesum)
-GIT_REPOSITORIES+=	${LUA_DISTNAME}
+REPOSITORIES+=		${LUA_DISTNAME}
 GIT_REPO.lua=		git@github.com:openresty/lua-nginx-module.git
 GIT_TAG.lua=		v0.10.15
-LUA_DISTNAME=		lua
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-openresty-echo)
+ECHOMOD_DISTNAME=	echo-nginx-module
 CONFIGURE_ARGS+=	--add-module=../${ECHOMOD_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-openresty-echo) || make(makesum)
-ECHOMOD_VERSION=	0.61
-ECHOMOD_DISTNAME=	echo-nginx-module-${ECHOMOD_VERSION}
-GIT_REPOSITORIES+=	echomod
-GIT_REPO.echomod=	git@github.com:openresty/echo-nginx-module.git
+REPOSITORIES+=		${DISTNAME}
+GIT_REPO.echomod=	git@github.com:openresty/${DISTNAME}.git
 GIT_TAG.echomod=	v0.61
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-openresty-set-misc)
+SETMISC_DISTNAME=	set-misc-nginx-module
 CONFIGURE_ARGS+=	--add-module=../${SETMISC_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-openresty-set-misc) || make(makesum)
-SETMISC_DISTNAME=	set-misc-nginx-module
-GIT_REPOSITORIES+=	setmisc
-GIT_REPO.setmisc=	git@github.com:openresty/set-misc-nginx-module.git
+REPOSITORIES+=		${SETMISC_DISTNAME}
+GIT_REPO.setmisc=	git@github.com:openresty/${SETMISC_DISTNAME}.git
 GIT_TAG.setmisc=	v0.32
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-openresty-array-var)
+ARRAYVAR_DISTNAME=	array-var-nginx-module
 CONFIGURE_ARGS+=	--add-module=../${ARRAYVAR_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-openresty-array-var) || make(makesum)
-ARRAYVAR_DISTNAME=	array-var-nginx-module
-GIT_REPOSITORIES+=	arrayvar
-GIT_REPO.arrayvar=	git@github.com:openresty/array-var-nginx-module.git
+REPOSITORIES+=		${ARRAYVAR_DISTNAME}
+GIT_REPO.arrayvar=	git@github.com:openresty/${ARRAYVAR_DISTNAME}.git
 GIT_TAG.arrayvar=	v0.5
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-openresty-encrypted-session)
+ENCSESS_DISTNAME=	encrypted-session-nginx-module
 CONFIGURE_ARGS+=	--add-module=../${ENCSESS_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-openresty-encrypted-session) || make(makesum)
-ENCSESS_DISTNAME=	encrypted-session-nginx-module
-GIT_REPOSITORIES+=	encsess
-GIT_REPO.encsess=	git@github.com:openresty/encrypted-session-nginx-module.git
+REPOSITORIES+=		${ENCSESS_DISTNAME}
+GIT_REPO.encsess=	git@github.com:openresty/${ENCSESS_DISTNAME}.git
 GIT_TAG.encsess=	v0.8
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-form-input)
+FORMINPUT_DISTNAME=	form-input-nginx-module
 CONFIGURE_ARGS+=	--add-module=../${FORMINPUT_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-form-input) || make(makesum)
-FORMINPUT_DISTNAME=	form-input-nginx-module
-GIT_REPOSITORIES+=	${FORMINPUT_DISTNAME}	
-GIT_REPO.forminput=	git@github.com:calio/form-input-nginx-module.git
+REPOSITORIES+=		${FORMINPUT_DISTNAME}
+GIT_REPO.forminput=	git@github.com:calio/${FORMINPUT_DISTNAME}.git
 GIT_TAG.forminput=	v0.12
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-openresty-headers-more)
-CONFIGURE_ARGS+=	--add-module=../${HEADMORE_DISTNAME}
+HEADMORE_DISTNAME=		headers-more-nginx-module
+CONFIGURE_ARGS+=		--add-module=../${HEADMORE_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-openresty-headers-more) || make(makesum)
-HEADMORE_DISTNAME=	headers-more-nginx-module
-GIT_REPOSITORIES+=	${HEADMORE_DISTNAME}
-GIT_REPO.${HEADMORE_DISTNAME}=	git@github.com:openresty/headers-more-nginx-module.git
+REPOSITORIES+=			${HEADMORE_DISTNAME}
+GIT_REPO.${HEADMORE_DISTNAME}=	git@github.com:openresty/${HEADMORE_DISTNAME}.git
 GIT_TAG.${HEADMORE_DISTNAME}=	v0.33
 .endif
 
@@ -166,7 +180,7 @@ CONFIGURE_ARGS+=	--without-http_uwsgi_module
 CONFIGURE_ARGS+=	--add-module=../nchan-${PUSH_VERSION}
 .endif
 .if !empty(PKG_OPTIONS:Mnginx-push) || make(makesum)
-GIT_REPOSITORIES+=	push
+REPOSITORIES+=		push
 GIT_REPO.push=		git@github.com:slact/nchan.git
 GIT_TAG.push=		1.2.6
 .endif
@@ -202,11 +216,13 @@ CONFIGURE_ARGS+=	--with-http_secure_link_module
 .endif
 
 .if !empty(PKG_OPTIONS:Mrtmp)
+RTMP_DISTNAME=		nginx-rtmp-module
 CONFIGURE_ARGS+=	--add-module=../${RTMP_DISTNAME}
 .endif
 .if !empty(PKG_OPTIONS:Mrtmp) || make(makesum)
-RTMP_DISTNAME=		nginx-rtmp-module
-GIT_REPOSITORIES+=	rtmp
-GIT_REPO.rtmp=		git@github.com:arut/nginx-rtmp-module.git
+REPOSITORIES+=		${RTMP_DISTNAME}
+GIT_REPO.rtmp=		git@github.com:arut/${RTMP_DISTNAME}.git
 GIT_TAG.rtmp=		1.2.1
 .endif
+
+.include "../../wip/mk/git-package.mk"

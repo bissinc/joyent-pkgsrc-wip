@@ -20,7 +20,7 @@ NGINX_DATADIR?=		${VARBASE}/db/nginx
 NGINX_LOGDIR?=		${VARBASE}/log/nginx
 NGINX_PIDDIR?=		${VARBASE}/run
 
-BUILD_DEFS+=		NGINX_DATADIR NGINX_LOGDIR NGINX_PIDDIR VARBASE MODSECURITY_NGINX_DIRNAME MODSECURITY_NGINX_DISTNAME
+BUILD_DEFS+=		NGINX_DATADIR NGINX_LOGDIR NGINX_PIDDIR VARBASE CUSTOM_OPTS_FILES
 
 PKG_USERS_VARS+=	NGINX_USER
 PKG_GROUPS_VARS+=	NGINX_GROUP
@@ -47,13 +47,14 @@ CONFIGURE_ARGS+=	--http-client-body-temp-path=${NGINX_DATADIR}/client_body_temp
 CONFIGURE_ARGS+=	--http-proxy-temp-path=${NGINX_DATADIR}/proxy_temp
 CONFIGURE_ARGS+=	--http-fastcgi-temp-path=${NGINX_DATADIR}/fstcgi_temp
 CONFIGURE_ARGS+=	--http-scgi-temp-path=${NGINX_DATADIR}/scgi_temp
-CONFIGURE_ARGS+=	--add-dynamic-module=../${MODSECURITY_NGINX_DISTNAME}
 
 PKG_SYSCONFSUBDIR=	nginx
 
+.include "../../wip/nginx-waf/options.mk"
+
 EGDIR=			${PREFIX}/share/examples/nginx
 EGFILES+=		fastcgi.conf fastcgi_params koi-utf koi-win \
-			mime.types nginx.conf win-utf modsec_includes.conf
+			mime.types nginx.conf win-utf
 
 .for file in ${EGFILES}
 CONF_FILES+=	${EGDIR}/conf/${file} ${PKG_SYSCONFDIR}/${file}
@@ -88,11 +89,6 @@ MESSAGE_SUBST+=		NGINX_PIDDIR=${NGINX_PIDDIR}
 MESSAGE_SUBST+=		NGINX_USER=${NGINX_USER}
 MESSAGE_SUBST+=		NGINX_GROUP=${NGINX_GROUP}
 
-MODSECURITY_NGINX_DISTNAME=		ModSecurity-nginx
-GIT_REPOSITORIES=			${MODSECURITY_NGINX_DISTNAME}
-GIT_REPO.modsecurity-nginx=		git@github.com:SpiderLabs/ModSecurity-nginx.git
-GIT_TAG.modsecurity-nginx=		v1.0.1
-
 .if ${OPSYS} == "Darwin"
 SOEXT=		bundle
 .else
@@ -102,13 +98,13 @@ PLIST_SUBST+=	SOEXT=${SOEXT}
 
 do-install:
 	${INSTALL_PROGRAM} ${WRKSRC}/objs/nginx ${DESTDIR}${PREFIX}/sbin/nginx
+	${INSTALL_DATA} ${FILESDIR}/${CUSTOM_OPTS_FILES} ${WRKSRC}/conf/${CUSTOM_OPTS_FILES}
 .for file in ${EGFILES}
 	${INSTALL_DATA} ${WRKSRC}/conf/${file} ${DESTDIR}${EGDIR}/conf/${file}
 .endfor
 	${INSTALL_DATA} ${WRKSRC}/html/50x.html ${DESTDIR}${EGDIR}/html/50x.html
 	${INSTALL_DATA} ${WRKSRC}/html/index.html ${DESTDIR}${EGDIR}/html/index.html
 	${INSTALL_MAN} ${WRKSRC}/objs/nginx.8 ${DESTDIR}${PREFIX}/${PKGMANDIR}/man8
-	${INSTALL_DATA} ${FILES}/modsec_includes.conf ${DESTDIR}${EGDIR}/conf/modsec_includes.conf
 .if !empty(PKG_OPTIONS:Mperl)
 	${INSTALL_LIB_DIR} ${DESTDIR}${PERL5_INSTALLVENDORARCH}/auto/nginx
 	${INSTALL_LIB} ${WRKSRC}/objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.${SOEXT} \
@@ -117,7 +113,5 @@ do-install:
 		${DESTDIR}${PERL5_INSTALLVENDORARCH}
 .endif
 
-.include "../../wip/mk/git-package.mk"
-.include "../../wip/modsecurity/buildlink3.mk"
 .include "../../devel/zlib/buildlink3.mk"
 .include "../../mk/bsd.pkg.mk"
