@@ -1,8 +1,8 @@
 $NetBSD$
 
-# Patch == to = - John Barfield
+This patch replaces all occurences of == with =.  barfield 20200715
 
---- configure.orig	2020-07-15 04:51:52.498113593 +0000
+--- configure.orig	2020-07-15 18:12:29.338488620 +0000
 +++ configure
 @@ -4393,14 +4393,14 @@ static char *f (char * (*g) (char **, in
     These don't provoke an error unfortunately, instead are silently treated
@@ -29,18 +29,18 @@ $NetBSD$
 -if test "x${with_yajl}" == "xno"; then
 +if test "x${with_yajl}" = "xno"; then
  
- $as_echo "#define HAVE_YAJL 0" >>confdefs.h
+ $as_echo "#define HAVE_GEOIP 0" >>confdefs.h
  
-@@ -5031,7 +5031,7 @@ $as_echo "#define HAVE_YAJL 0" >>confdef
- $as_echo "$as_me: Support for YAJL was disabled by the utilization of --without-yajl or --with-yajl=no" >&6;}
+@@ -5031,7 +5031,7 @@ $as_echo "#define HAVE_GEOIP 0" >>confde
+ $as_echo "$as_me: Support for GeoIP was disabled by the utilization of --without-yajl or --with-yajl=no" >&6;}
      YAJL_DISABLED=yes
  else
 -    if test "x${with_yajl}" == "xyes"; then
 +    if test "x${with_yajl}" = "xyes"; then
          YAJL_MANDATORY=yes
-         { $as_echo "$as_me:${as_lineno-$LINENO}: YAJL support was marked as mandatory by the utilization of --with-yajl=yes" >&5
- $as_echo "$as_me: YAJL support was marked as mandatory by the utilization of --with-yajl=yes" >&6;}
-@@ -5043,8 +5043,8 @@ $as_echo "$as_me: YAJL support was marke
+         { $as_echo "$as_me:${as_lineno-$LINENO}: GeoIP support was marked as mandatory by the utilization of --with-yajl=yes" >&5
+ $as_echo "$as_me: GeoIP support was marked as mandatory by the utilization of --with-yajl=yes" >&6;}
+@@ -5043,8 +5043,8 @@ $as_echo "$as_me: GeoIP support was mark
  #            fi
  #        done
  
@@ -48,7 +48,7 @@ $NetBSD$
 -        if test "x${with_yajl}" == "x" || test "x${with_yajl}" == "xyes"; then
 +#    if test "x${with_yajl}" != "xyes" or test "x${with_yajl}" = "xyes"; then
 +        if test "x${with_yajl}" = "x" || test "x${with_yajl}" = "xyes"; then
-             # Nothing about YAJL was informed, using the pkg-config to figure things out.
+             # Nothing about GeoIP was informed, using the pkg-config to figure things out.
              if test -n "${PKG_CONFIG}"; then
                  YAJL_PKG_NAME=""
 @@ -5277,7 +5277,7 @@ fi
@@ -337,7 +337,7 @@ $NetBSD$
      FUZZ_CPPCFLAGS="-fsanitize=address -fsanitize-coverage=4 "
      GLOBAL_LDADD="$GLOBAL_LDADD -fsanitize=address "
      GLOBAL_CPPFLAGS="$GLOBAL_CPPFLAGS $FUZZ_CPPCFLAGS"
-@@ -22624,7 +22624,7 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_writ
+@@ -22626,7 +22626,7 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_writ
  /^[\t ]*#[\t ]*(define|undef)[\t ]+$ac_word_re([\t (]|\$)/ {
    line = \$ 0
    split(line, arg, " ")
@@ -346,7 +346,7 @@ $NetBSD$
      defundef = arg[2]
      mac1 = arg[3]
    } else {
-@@ -22642,7 +22642,7 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_writ
+@@ -22644,7 +22644,7 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_writ
      # Replace #undef with comments.  This is necessary, for example,
      # in the case of _POSIX_SOURCE, which is predefined and required
      # on some systems where configure will not decide to define it.
