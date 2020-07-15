@@ -1,10 +1,6 @@
 $NetBSD$
 
-                Portability fixes for configure script.
-                Change == to =
-
-
---- configure.orig	2020-01-13 13:13:11.000000000 +0000
+--- configure.orig	2020-07-15 04:51:52.498113593 +0000
 +++ configure
 @@ -4393,14 +4393,14 @@ static char *f (char * (*g) (char **, in
     These don't provoke an error unfortunately, instead are silently treated
@@ -31,18 +27,18 @@ $NetBSD$
 -if test "x${with_yajl}" == "xno"; then
 +if test "x${with_yajl}" = "xno"; then
  
- $as_echo "#define HAVE_GEOIP 0" >>confdefs.h
+ $as_echo "#define HAVE_YAJL 0" >>confdefs.h
  
-@@ -5031,7 +5031,7 @@ $as_echo "#define HAVE_GEOIP 0" >>confde
- $as_echo "$as_me: Support for GeoIP was disabled by the utilization of --without-yajl or --with-yajl=no" >&6;}
+@@ -5031,7 +5031,7 @@ $as_echo "#define HAVE_YAJL 0" >>confdef
+ $as_echo "$as_me: Support for YAJL was disabled by the utilization of --without-yajl or --with-yajl=no" >&6;}
      YAJL_DISABLED=yes
  else
 -    if test "x${with_yajl}" == "xyes"; then
 +    if test "x${with_yajl}" = "xyes"; then
          YAJL_MANDATORY=yes
-         { $as_echo "$as_me:${as_lineno-$LINENO}: GeoIP support was marked as mandatory by the utilization of --with-yajl=yes" >&5
- $as_echo "$as_me: GeoIP support was marked as mandatory by the utilization of --with-yajl=yes" >&6;}
-@@ -5043,8 +5043,8 @@ $as_echo "$as_me: GeoIP support was mark
+         { $as_echo "$as_me:${as_lineno-$LINENO}: YAJL support was marked as mandatory by the utilization of --with-yajl=yes" >&5
+ $as_echo "$as_me: YAJL support was marked as mandatory by the utilization of --with-yajl=yes" >&6;}
+@@ -5043,8 +5043,8 @@ $as_echo "$as_me: YAJL support was marke
  #            fi
  #        done
  
@@ -50,7 +46,7 @@ $NetBSD$
 -        if test "x${with_yajl}" == "x" || test "x${with_yajl}" == "xyes"; then
 +#    if test "x${with_yajl}" != "xyes" or test "x${with_yajl}" = "xyes"; then
 +        if test "x${with_yajl}" = "x" || test "x${with_yajl}" = "xyes"; then
-             # Nothing about GeoIP was informed, using the pkg-config to figure things out.
+             # Nothing about YAJL was informed, using the pkg-config to figure things out.
              if test -n "${PKG_CONFIG}"; then
                  YAJL_PKG_NAME=""
 @@ -5277,7 +5277,7 @@ fi
@@ -239,19 +235,19 @@ $NetBSD$
  # define ISLOWER(c) ('a' <= (c) && (c) <= 'z')
  # define TOUPPER(c) (ISLOWER(c) ? 'A' + ((c) - 'a') : (c))
  #else
-@@ -12274,9 +12274,9 @@ _LT_EOF
+@@ -12257,9 +12257,9 @@ _LT_EOF
  	# it in the Import File for the 'aix-soname' feature, so we have
  	# to replace the "-B" option with "-P" for AIX nm.
  	if $NM -V 2>&1 | $GREP 'GNU' > /dev/null; then
 -	  export_symbols_cmds='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B") || (\$ 2 == "W")) && (substr(\$ 3,1,1) != ".")) { if (\$ 2 == "W") { print \$ 3 " weak" } else { print \$ 3 } } }'\'' | sort -u > $export_symbols'
 +	  export_symbols_cmds='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 = "T") || (\$ 2 = "D") || (\$ 2 = "B") || (\$ 2 = "W")) && (substr(\$ 3,1,1) != ".")) { if (\$ 2 = "W") { print \$ 3 " weak" } else { print \$ 3 } } }'\'' | sort -u > $export_symbols'
  	else
--	  export_symbols_cmds='`func_echo_all $NM | $SED -e '\''s/B\([^B]*\)$/P\1/'\''` -PCpgl $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B") || (\$ 2 == "L") || (\$ 2 == "W") || (\$ 2 == "V") || (\$ 2 == "Z")) && (substr(\$ 1,1,1) != ".")) { if ((\$ 2 == "W") || (\$ 2 == "V") || (\$ 2 == "Z")) { print \$ 1 " weak" } else { print \$ 1 } } }'\'' | sort -u > $export_symbols'
-+	  export_symbols_cmds='`func_echo_all $NM | $SED -e '\''s/B\([^B]*\)$/P\1/'\''` -PCpgl $libobjs $convenience | awk '\''{ if (((\$ 2 = "T") || (\$ 2 = "D") || (\$ 2 = "B") || (\$ 2 = "L") || (\$ 2 = "W") || (\$ 2 = "V") || (\$ 2 = "Z")) && (substr(\$ 1,1,1) != ".")) { if ((\$ 2 = "W") || (\$ 2 = "V") || (\$ 2 = "Z")) { print \$ 1 " weak" } else { print \$ 1 } } }'\'' | sort -u > $export_symbols'
+-	  export_symbols_cmds='`func_echo_all $NM | $SED -e '\''s/B\([^B]*\)$/P\1/'\''` -PCpgl $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B") || (\$ 2 == "W") || (\$ 2 == "V") || (\$ 2 == "Z")) && (substr(\$ 1,1,1) != ".")) { if ((\$ 2 == "W") || (\$ 2 == "V") || (\$ 2 == "Z")) { print \$ 1 " weak" } else { print \$ 1 } } }'\'' | sort -u > $export_symbols'
++	  export_symbols_cmds='`func_echo_all $NM | $SED -e '\''s/B\([^B]*\)$/P\1/'\''` -PCpgl $libobjs $convenience | awk '\''{ if (((\$ 2 = "T") || (\$ 2 = "D") || (\$ 2 = "B") || (\$ 2 = "W") || (\$ 2 = "V") || (\$ 2 = "Z")) && (substr(\$ 1,1,1) != ".")) { if ((\$ 2 = "W") || (\$ 2 = "V") || (\$ 2 = "Z")) { print \$ 1 " weak" } else { print \$ 1 } } }'\'' | sort -u > $export_symbols'
  	fi
  	aix_use_runtimelinking=no
  
-@@ -13392,10 +13392,10 @@ BEGIN {RS = " "; FS = "/|\n";} {
+@@ -13374,10 +13374,10 @@ BEGIN {RS = " "; FS = "/|\n";} {
    lt_count = 0;
    for (lt_i = NF; lt_i > 0; lt_i--) {
      if ($lt_i != "" && $lt_i != ".") {
@@ -264,7 +260,7 @@ $NetBSD$
            lt_foo = "/" $lt_i lt_foo;
          } else {
            lt_count--;
-@@ -13404,7 +13404,7 @@ BEGIN {RS = " "; FS = "/|\n";} {
+@@ -13386,7 +13386,7 @@ BEGIN {RS = " "; FS = "/|\n";} {
      }
    }
    if (lt_foo != "") { lt_freq[lt_foo]++; }
@@ -273,7 +269,7 @@ $NetBSD$
  }'`
    # AWK program above erroneously prepends '/' to C:/dos/paths
    # for these hosts.
-@@ -13465,7 +13465,7 @@ aix[4-9]*)
+@@ -13447,7 +13447,7 @@ aix[4-9]*)
      # development snapshots of GCC prior to 3.0.
      case $host_os in
        aix4 | aix4.[01] | aix4.[01].*)
@@ -282,7 +278,7 @@ $NetBSD$
  	   echo ' yes '
  	   echo '#endif'; } | $CC -E - | $GREP yes > /dev/null; then
  	:
-@@ -14663,7 +14663,7 @@ else
+@@ -14645,7 +14645,7 @@ else
  
  /* When -fvisibility=hidden is used, assume the code has been annotated
     correspondingly for the symbols needed.  */
@@ -291,7 +287,7 @@ $NetBSD$
  int fnord () __attribute__((visibility("default")));
  #endif
  
-@@ -14769,7 +14769,7 @@ else
+@@ -14751,7 +14751,7 @@ else
  
  /* When -fvisibility=hidden is used, assume the code has been annotated
     correspondingly for the symbols needed.  */
@@ -300,19 +296,19 @@ $NetBSD$
  int fnord () __attribute__((visibility("default")));
  #endif
  
-@@ -17224,9 +17224,9 @@ $as_echo_n "checking whether the $compil
+@@ -17194,9 +17194,9 @@ $as_echo_n "checking whether the $compil
      # it in the Import File for the 'aix-soname' feature, so we have
      # to replace the "-B" option with "-P" for AIX nm.
      if $NM -V 2>&1 | $GREP 'GNU' > /dev/null; then
 -      export_symbols_cmds_CXX='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B") || (\$ 2 == "W")) && (substr(\$ 3,1,1) != ".")) { if (\$ 2 == "W") { print \$ 3 " weak" } else { print \$ 3 } } }'\'' | sort -u > $export_symbols'
 +      export_symbols_cmds_CXX='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 = "T") || (\$ 2 = "D") || (\$ 2 = "B") || (\$ 2 = "W")) && (substr(\$ 3,1,1) != ".")) { if (\$ 2 = "W") { print \$ 3 " weak" } else { print \$ 3 } } }'\'' | sort -u > $export_symbols'
      else
--      export_symbols_cmds_CXX='`func_echo_all $NM | $SED -e '\''s/B\([^B]*\)$/P\1/'\''` -PCpgl $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B") || (\$ 2 == "L") || (\$ 2 == "W") || (\$ 2 == "V") || (\$ 2 == "Z")) && (substr(\$ 1,1,1) != ".")) { if ((\$ 2 == "W") || (\$ 2 == "V") || (\$ 2 == "Z")) { print \$ 1 " weak" } else { print \$ 1 } } }'\'' | sort -u > $export_symbols'
-+      export_symbols_cmds_CXX='`func_echo_all $NM | $SED -e '\''s/B\([^B]*\)$/P\1/'\''` -PCpgl $libobjs $convenience | awk '\''{ if (((\$ 2 = "T") || (\$ 2 = "D") || (\$ 2 = "B") || (\$ 2 = "L") || (\$ 2 = "W") || (\$ 2 = "V") || (\$ 2 = "Z")) && (substr(\$ 1,1,1) != ".")) { if ((\$ 2 = "W") || (\$ 2 = "V") || (\$ 2 = "Z")) { print \$ 1 " weak" } else { print \$ 1 } } }'\'' | sort -u > $export_symbols'
+-      export_symbols_cmds_CXX='`func_echo_all $NM | $SED -e '\''s/B\([^B]*\)$/P\1/'\''` -PCpgl $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B") || (\$ 2 == "W") || (\$ 2 == "V") || (\$ 2 == "Z")) && (substr(\$ 1,1,1) != ".")) { if ((\$ 2 == "W") || (\$ 2 == "V") || (\$ 2 == "Z")) { print \$ 1 " weak" } else { print \$ 1 } } }'\'' | sort -u > $export_symbols'
++      export_symbols_cmds_CXX='`func_echo_all $NM | $SED -e '\''s/B\([^B]*\)$/P\1/'\''` -PCpgl $libobjs $convenience | awk '\''{ if (((\$ 2 = "T") || (\$ 2 = "D") || (\$ 2 = "B") || (\$ 2 = "W") || (\$ 2 = "V") || (\$ 2 = "Z")) && (substr(\$ 1,1,1) != ".")) { if ((\$ 2 = "W") || (\$ 2 = "V") || (\$ 2 = "Z")) { print \$ 1 " weak" } else { print \$ 1 } } }'\'' | sort -u > $export_symbols'
      fi
      ;;
    pw32*)
-@@ -17441,7 +17441,7 @@ aix[4-9]*)
+@@ -17411,7 +17411,7 @@ aix[4-9]*)
      # development snapshots of GCC prior to 3.0.
      case $host_os in
        aix4 | aix4.[01] | aix4.[01].*)
@@ -321,7 +317,7 @@ $NetBSD$
  	   echo ' yes '
  	   echo '#endif'; } | $CC -E - | $GREP yes > /dev/null; then
  	:
-@@ -18456,7 +18456,7 @@ else
+@@ -18426,7 +18426,7 @@ else
  
  fi
  
@@ -330,7 +326,7 @@ $NetBSD$
      MODSEC_MUTEX_ON_PM="-DMUTEX_ON_PM=1"
  
  fi
-@@ -18855,7 +18855,7 @@ if test "$PLATFORM" != "MacOSX" -a "$PLA
+@@ -18825,7 +18825,7 @@ if test "$PLATFORM" != "MacOSX" -a "$PLA
      GLOBAL_LDADD="-lrt  "
  fi
  
@@ -339,7 +335,7 @@ $NetBSD$
      FUZZ_CPPCFLAGS="-fsanitize=address -fsanitize-coverage=4 "
      GLOBAL_LDADD="$GLOBAL_LDADD -fsanitize=address "
      GLOBAL_CPPFLAGS="$GLOBAL_CPPFLAGS $FUZZ_CPPCFLAGS"
-@@ -22656,7 +22656,7 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_writ
+@@ -22624,7 +22624,7 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_writ
  /^[\t ]*#[\t ]*(define|undef)[\t ]+$ac_word_re([\t (]|\$)/ {
    line = \$ 0
    split(line, arg, " ")
@@ -348,7 +344,7 @@ $NetBSD$
      defundef = arg[2]
      mac1 = arg[3]
    } else {
-@@ -22674,7 +22674,7 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_writ
+@@ -22642,7 +22642,7 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_writ
      # Replace #undef with comments.  This is necessary, for example,
      # in the case of _POSIX_SOURCE, which is predefined and required
      # on some systems where configure will not decide to define it.

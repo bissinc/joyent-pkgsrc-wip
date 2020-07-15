@@ -1,25 +1,27 @@
 # $NetBSD$
 # Makefile,v 1.0 2020/06/25 14:28:43 barfield Exp
 
-DISTNAME=	modsecurity-v3.0.4
-PKGNAME=	modsecurity-3
+DISTNAME=	ModSecurity
 CATEGORIES=	security
-MASTER_SITES=	${MASTER_SITE_GITHUB:=SpiderLabs/}
-GITHUB_PROJECT=	ModSecurity
-GITHUB_RELEASE=	${PKGVERSION_NOREV}
-DISTFILES=	${DEFAULT_DISTFILES}
+GIT_REPO.${DISTNAME}=	git@github.com:SpiderLabs/${DISTNAME}.git
+GIT_TAG=	v${PKGVERSION_NOREV}
+#DISTFILES+=	modsecurity-v3.0.4
+GIT_REPOSITORIES+=	${DISTNAME}
 
 MAINTAINER=	john.barfield@bissinc.com
 HOMEPAGE=	http://www.modsecurity.org/
 COMMENT=	Intrusion detection and prevention egine for web applications (WAF)
 LICENSE=	apache-2.0
 
+#DEPENDS+=       git<=2.24.1:../../devel/git
+
 .include "../../mk/bsd.prefs.mk"
+.include "../../wip/mk/git-package.mk"
 .include "sunos.mk"
 
 USE_LANGUAGES=		c	c++
 USE_LIBTOOL=		yes
-USE_TOOLS+=		autoconf automake gmake pkg-config flex pax
+USE_TOOLS+=		autoconf automake gmake pkg-config flex
 GNU_CONFIGURE=		yes
 
 DEPENDS+=		doxygen>=1.8.0:../../devel/doxygen
@@ -55,6 +57,10 @@ MODSEC_LOGDIR=		${VARBASE}/log/${MODSEC_NAME}
 OWN_DIRS+=		${MODSEC_LOGDIR}
 
 .include "coreruleset.mk"
+
+post-extract:
+	cd ${WRKSRC}; ./build.sh
+	
 
 pre-install:
 	${INSTALL_DATA} ${WRKSRC}/modsecurity.conf-recommended ${DESTDIR}${EGDIR}/modsecurity.conf
