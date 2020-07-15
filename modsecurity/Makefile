@@ -1,19 +1,19 @@
 # $NetBSD$
 # Makefile,v 1.0 2020/06/25 14:28:43 barfield Exp
 
-DISTNAME=	ModSecurity
-CATEGORIES=	security
+DISTNAME=	modsecurity
+PKGNAME=	${DISTNAME}-3.0.4
+CATEGORIES=	wip
+
 GIT_REPO.${DISTNAME}=	git@github.com:SpiderLabs/${DISTNAME}.git
-GIT_TAG=	v${PKGVERSION_NOREV}
-#DISTFILES+=	modsecurity-v3.0.4
+GIT_TAG.${DISTNAME}=	v${PKGVERSION_NOREV}
+
 GIT_REPOSITORIES+=	${DISTNAME}
 
 MAINTAINER=	john.barfield@bissinc.com
 HOMEPAGE=	http://www.modsecurity.org/
 COMMENT=	Intrusion detection and prevention egine for web applications (WAF)
 LICENSE=	apache-2.0
-
-#DEPENDS+=       git<=2.24.1:../../devel/git
 
 .include "../../mk/bsd.prefs.mk"
 .include "../../wip/mk/git-package.mk"
@@ -60,7 +60,6 @@ OWN_DIRS+=		${MODSEC_LOGDIR}
 
 post-extract:
 	cd ${WRKSRC}; ./build.sh
-	
 
 pre-install:
 	${INSTALL_DATA} ${WRKSRC}/modsecurity.conf-recommended ${DESTDIR}${EGDIR}/modsecurity.conf

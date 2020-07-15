@@ -1,1 +1,3 @@
-SHA1 (patch-configure) = f67be7006352f97e84bc783ef8f968642c0e90d6
+$NetBSD: distinfo,v 1.70 2020/07/15 08:06:29 barfield Exp $
+
+SHA1 (patch-configure) = 9e8120feaf338d9d4716effc153211b5818bc81c

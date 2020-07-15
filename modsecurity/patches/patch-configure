@@ -1,5 +1,7 @@
 $NetBSD$
 
+# Patch == to = - John Barfield
+
 --- configure.orig	2020-07-15 04:51:52.498113593 +0000
 +++ configure
 @@ -4393,14 +4393,14 @@ static char *f (char * (*g) (char **, in
