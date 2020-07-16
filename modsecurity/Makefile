@@ -1,4 +1,4 @@
-# $NetBSD$
+
 # Makefile,v 1.0 2020/06/25 14:28:43 barfield Exp
 
 DISTNAME=	modsecurity
@@ -7,8 +7,10 @@ CATEGORIES=	wip
 
 GIT_REPO.${DISTNAME}=	git@github.com:SpiderLabs/${DISTNAME}.git
 GIT_TAG.${DISTNAME}=	v${PKGVERSION_NOREV}
+.include "../../wip/modsecurity/coreruleset.mk"
 
-GIT_REPOSITORIES+=	${DISTNAME}
+GIT_REPOSITORIES=	${REPOSITORIES}
+REPOSITORIES+=		${DISTNAME}
 
 MAINTAINER=	john.barfield@bissinc.com
 HOMEPAGE=	http://www.modsecurity.org/
@@ -56,20 +58,12 @@ INSTALLATION_DIRS+=	bin \
 MODSEC_LOGDIR=		${VARBASE}/log/${MODSEC_NAME}
 OWN_DIRS+=		${MODSEC_LOGDIR}
 
-.include "coreruleset.mk"
-
 post-extract:
 	cd ${WRKSRC}; ./build.sh
 
 pre-install:
 	${INSTALL_DATA} ${WRKSRC}/modsecurity.conf-recommended ${DESTDIR}${EGDIR}/modsecurity.conf
 	${INSTALL_DATA} ${WRKSRC}/unicode.mapping ${DESTDIR}${EGDIR}/unicode.mapping
-	${INSTALL_DATA} ${WRKDIR}/${CRS_DIR}/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example ${DESTDIR}${EGDIR}/${CRS_NAME}/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
-	${INSTALL_DATA} ${WRKDIR}/${CRS_DIR}/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example ${DESTDIR}${EGDIR}/${CRS_NAME}/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
-	${INSTALL_DATA} ${WRKDIR}/${CRS_DIR}/crs-setup.conf.example ${DESTDIR}${EGDIR}/${CRS_NAME}/crs-setup.conf
-.for file in ${CRS_FILES}
-	${INSTALL_DATA} ${WRKDIR}/${CRS_DIR}/rules/${file}      ${DESTDIR}${EGDIR}/${CRS_NAME}/rules/${file}
-.endfor
 
 CONF_FILES+=	${EGDIR}/unicode.mapping \
 		${PKG_SYSCONFDIR}/unicode.mapping
