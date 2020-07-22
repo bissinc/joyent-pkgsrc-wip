@@ -55,6 +55,7 @@ share/examples/modsecurity/coreruleset/rules/windows-powershell-commands.data
 share/examples/modsecurity/modsecurity.conf
 share/examples/modsecurity/unicode.mapping
 @pkgdir lib/modsecurity
+@pkgdir includemodsecurityactions
 @pkgdir include
 @pkgdir etc/modsecurity/coreruleset/rules
 @pkgdir bin

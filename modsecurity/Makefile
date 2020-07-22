@@ -1,22 +1,21 @@
-
-# Makefile,v 1.0 2020/06/25 14:28:43 barfield Exp
+# $NetBSD: Makefile,v 1.0 2020/06/25 14:28:43 barfield Exp $
 
 DISTNAME=	modsecurity
 PKGNAME=	${DISTNAME}-3.0.4
 CATEGORIES=	wip
 
-GIT_REPO.${DISTNAME}=	git@github.com:SpiderLabs/${DISTNAME}.git
-GIT_TAG.${DISTNAME}=	v${PKGVERSION_NOREV}
-.include "../../wip/modsecurity/coreruleset.mk"
-
 GIT_REPOSITORIES=	${REPOSITORIES}
 REPOSITORIES+=		${DISTNAME}
+
+GIT_REPO.${DISTNAME}=	git@github.com:SpiderLabs/${DISTNAME}.git
+GIT_TAG.${DISTNAME}=	v${PKGVERSION_NOREV}
 
 MAINTAINER=	john.barfield@bissinc.com
 HOMEPAGE=	http://www.modsecurity.org/
 COMMENT=	Intrusion detection and prevention egine for web applications (WAF)
 LICENSE=	apache-2.0
 
+.include "../../wip/modsecurity/coreruleset.mk"
 .include "../../mk/bsd.prefs.mk"
 .include "../../wip/mk/git-package.mk"
 .include "sunos.mk"
@@ -47,10 +46,11 @@ BUILD_DEFS+=		VARBASE MODSEC_LOGDIR MODSEC_NAME
 
 MODSEC_NAME=		modsecurity
 PKG_SYSCONFSUBDIR=	${MODSEC_NAME}
-EGDIR=			${PREFIX}/share/examples/${MODSEC_NAME}
+EGDIR=			${DESTDIR}${PREFIX}/share/examples/${MODSEC_NAME}
 
 INSTALLATION_DIRS+=	bin \
 			include \
+			include\${MODSEC_NAME}\actions \
 			lib/${MODSEC_NAME} \
 			share/examples/${MODSEC_NAME} \
 			${PKG_SYSCONFDIR}
@@ -58,17 +58,17 @@ INSTALLATION_DIRS+=	bin \
 MODSEC_LOGDIR=		${VARBASE}/log/${MODSEC_NAME}
 OWN_DIRS+=		${MODSEC_LOGDIR}
 
+CONF_FILES+=    ${EGDIR}/unicode.mapping \
+                ${PKG_SYSCONFDIR}/unicode.mapping
+CONF_FILES+=    ${EGDIR}/modsecurity.conf \
+                ${PKG_SYSCONFDIR}/modsecurity.conf
+
 post-extract:
-	cd ${WRKSRC}; ./build.sh
+	cd ${WRKSRC} && ./build.sh
 
-pre-install:
-	${INSTALL_DATA} ${WRKSRC}/modsecurity.conf-recommended ${DESTDIR}${EGDIR}/modsecurity.conf
-	${INSTALL_DATA} ${WRKSRC}/unicode.mapping ${DESTDIR}${EGDIR}/unicode.mapping
-
-CONF_FILES+=	${EGDIR}/unicode.mapping \
-		${PKG_SYSCONFDIR}/unicode.mapping
-CONF_FILES+=	${EGDIR}/modsecurity.conf \
-		${PKG_SYSCONFDIR}/modsecurity.conf
+do-install:
+	${INSTALL_DATA} ${WRKSRC}/modsecurity.conf-recommended ${EGDIR}/modsecurity.conf
+	${INSTALL_DATA} ${WRKSRC}/unicode.mapping ${EGDIR}/unicode.mapping
 
 .include "../../databases/lmdb/buildlink3.mk"
 .include "../../devel/libgetopt/buildlink3.mk"
