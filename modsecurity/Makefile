@@ -22,7 +22,7 @@ LICENSE=	apache-2.0
 
 USE_LANGUAGES=		c	c++
 USE_LIBTOOL=		yes
-USE_TOOLS+=		autoconf automake gmake pkg-config flex
+USE_TOOLS+=		autoconf automake gmake pkg-config flex bison
 GNU_CONFIGURE=		yes
 
 DEPENDS+=		doxygen>=1.8.0:../../devel/doxygen

@@ -10,7 +10,6 @@ DISTFILES=	${DEFAULT_DISTFILES}
 HOMEPAGE=	http://nginx.org/
 COMMENT=	Lightweight HTTP and mail proxy server with modsecurity WAF connector
 LICENSE=	2-clause-bsd
-DEPENDS+=	git<=2.24.1:../../devel/git
 
 .include "../../mk/bsd.prefs.mk"
 
